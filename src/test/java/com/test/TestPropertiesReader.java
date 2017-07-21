@@ -18,9 +18,6 @@ public class TestPropertiesReader {
 	
 	@Test
 	public void testGitHub(){
-		
-		
-		
 		System.out.println("git hub，hello world");
 	}
 }
