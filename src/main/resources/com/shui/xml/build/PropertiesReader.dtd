@@ -1,0 +1,17 @@
+<!ELEMENT properties (import*,property*)>
+<!ELEMENT import EMPTY>
+<!ELEMENT property (string|list|map)>
+<!ELEMENT string (#PCDATA)>
+<!ELEMENT list (string*)>
+<!ELEMENT map (entry*)>
+<!ELEMENT entry (#PCDATA)>
+
+<!ATTLIST property
+	key CDATA #REQUIRED
+>
+<!ATTLIST entry
+	key CDATA #REQUIRED
+>
+<!ATTLIST import
+	location CDATA #REQUIRED
+>

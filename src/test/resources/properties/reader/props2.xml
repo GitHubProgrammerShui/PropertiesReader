@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	<property key="innerKeyOfProp2">
+		<string>hello inner key-value innerKeyOfProp2</string>
+	</property>
+</properties>

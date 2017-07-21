@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	<import location="classpath:properties/reader/props.xml"/>
+	<import location="classpath:properties/reader/props2.xml"/>
+	<property key="myList">
+		<list>
+			<string>hello</string>
+			<string>world</string>
+		</list>
+	</property>
+	<property key="myMap">
+		<map>
+			<entry key="word1">hello</entry>
+			<entry key="word2">world</entry>
+		</map>
+	</property>
+	<property key="myString">
+		<string>hello world</string>
+	</property>
+</properties>
