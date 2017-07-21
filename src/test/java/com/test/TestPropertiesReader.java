@@ -15,4 +15,9 @@ public class TestPropertiesReader {
 		reader.load("classpath:properties/reader/PropertiesReader.xml");
 		System.out.println(reader.getStringValue("innerKeyOfProp2"));
 	}
+	
+	@Test
+	public void testGitHub(){
+		System.out.println("git hub，hello world");
+	}
 }
