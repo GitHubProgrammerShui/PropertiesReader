@@ -57,17 +57,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>RongHui Release Repository</name>
-			<url>http://192.168.10.234:8081/nexus/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>RongHui Snapshots Repository</name>
-			<url>http://192.168.10.234:8081/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>
