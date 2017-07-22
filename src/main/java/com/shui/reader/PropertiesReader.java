@@ -26,6 +26,7 @@ public class PropertiesReader {
 	 * @throws JDOMException
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unchecked")
 	public void load(InputStream xmlInputStream) throws JDOMException, IOException{
 		Property property=null;
 		List<Element> eleList=null;
@@ -76,6 +77,7 @@ public class PropertiesReader {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private List<String> processListProperty(Element listElement){
 		List<Element> stringElementList=listElement.getChildren();
 		List<String> result=new ArrayList<>();
@@ -87,6 +89,7 @@ public class PropertiesReader {
 	private String processStringProperty(Element stringElement){
 		return stringElement.getText();
 	}
+	@SuppressWarnings("unchecked")
 	private Map<String,String> processMapProperty(Element mapElement){
 		List<Element> mapElementList=mapElement.getChildren();
 		Map<String, String> result=new HashMap<>();
@@ -128,8 +131,9 @@ public class PropertiesReader {
 	 * @param key
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<String> getListValue(String key){
-		for (Property property : list) {
+		for (Property property : list){
 			if(key!=null&&key.equals(property.getKey())){
 				if(property.getValue() instanceof List){
 					return (List<String>) property.getValue();
