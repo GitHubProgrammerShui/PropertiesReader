@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.shui.org/PropertiesReader-0.0.1" 
+	xmlns:tns="http://www.shui.org/PropertiesReader-0.0.1" 
+	elementFormDefault="qualified">
+	<element name="properties" type="tns:properties"/>
+	<element name="property" type="tns:property"/>
+	<element name="list" type="tns:list"/>
+	<element name="map" type="tns:map"/>
+	<element name="entry" type="tns:entry"/>
+	<element name="string" type="string"/>
+	<element name="import" type="tns:import"/>
+	
+	<complexType name="properties">
+		<sequence>
+			<element ref="tns:import" minOccurs="0" maxOccurs="unbounded"/>
+			<element ref="tns:property" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="property">
+		<choice>
+			<element ref="tns:string" minOccurs="0" maxOccurs="1"/>
+			<element ref="tns:list" minOccurs="0" maxOccurs="1"/>
+			<element ref="tns:map" minOccurs="0" maxOccurs="1"/>
+		</choice>
+		<attribute name="key" type="string" use="required"/>
+	</complexType>
+	<complexType name="list">
+		<choice>
+			<element ref="tns:string" minOccurs="0" maxOccurs="unbounded"/>
+			<element ref="tns:list" minOccurs="0" maxOccurs="unbounded"/>
+			<element ref="tns:map" minOccurs="0" maxOccurs="unbounded"/>
+		</choice>
+	</complexType>
+	<complexType name="map">
+		<sequence>
+			<element ref="tns:entry" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="entry">
+		<choice>
+			<element ref="tns:string" minOccurs="0" maxOccurs="1"/>
+			<element ref="tns:list" minOccurs="0" maxOccurs="1"/>
+			<element ref="tns:map" minOccurs="0" maxOccurs="1"/>
+		</choice>
+		<attribute name="key" type="string" use="required"/>
+	</complexType>
+	<complexType name="import">
+		<attribute name="location" type="string"/>
+	</complexType>
+</schema>

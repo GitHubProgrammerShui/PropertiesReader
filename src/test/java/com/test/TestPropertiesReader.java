@@ -13,7 +13,7 @@ public class TestPropertiesReader {
 	public void testProperties() throws JDOMException, IOException{
 		PropertiesReader reader=new PropertiesReader();
 		reader.load("classpath:properties/reader/PropertiesReader.xml");
-		System.out.println(reader.getStringValue("innerKeyOfProp2"));
+		System.out.println(reader.getString("innerKeyOfProp2"));
 	}
 	
 	@Test

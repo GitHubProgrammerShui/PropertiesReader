@@ -10,8 +10,8 @@
 	</property>
 	<property key="myMap">
 		<map>
-			<entry key="word1">hello</entry>
-			<entry key="word2">world</entry>
+			<entry key="word1"><string>hello</string></entry>
+			<entry key="word2"><string>world</string></entry>
 		</map>
 	</property>
 	<property key="myString">

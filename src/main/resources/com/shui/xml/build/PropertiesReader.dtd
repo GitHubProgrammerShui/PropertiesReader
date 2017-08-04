@@ -2,9 +2,9 @@
 <!ELEMENT import EMPTY>
 <!ELEMENT property (string|list|map)>
 <!ELEMENT string (#PCDATA)>
-<!ELEMENT list (string*)>
+<!ELEMENT list (string*|list*|map*)>
 <!ELEMENT map (entry*)>
-<!ELEMENT entry (#PCDATA)>
+<!ELEMENT entry (string|list|map)>
 
 <!ATTLIST property
 	key CDATA #REQUIRED
