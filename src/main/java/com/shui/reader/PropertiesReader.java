@@ -17,7 +17,18 @@ import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 
+import com.shui.constant.PropertyValueType;
 import com.shui.exception.PropertiesBuildException;
+import com.shui.model.Property;
+import static com.shui.constant.ElementAndAttributeDefine.ATTR_ENTRY_KEY;
+import static com.shui.constant.ElementAndAttributeDefine.ATTR_IMPORT_LOCATION;
+import static com.shui.constant.ElementAndAttributeDefine.ATTR_PROPERTY_KEY;
+import static com.shui.constant.ElementAndAttributeDefine.ELEMENT_ENTRY;
+import static com.shui.constant.ElementAndAttributeDefine.ELEMENT_IMPORT;
+import static com.shui.constant.ElementAndAttributeDefine.ELEMENT_LIST;
+import static com.shui.constant.ElementAndAttributeDefine.ELEMENT_MAP;
+import static com.shui.constant.ElementAndAttributeDefine.ELEMENT_PROPERTY;
+import static com.shui.constant.ElementAndAttributeDefine.ELEMENT_STRING;
 
 public class PropertiesReader{
 	
@@ -90,31 +101,42 @@ public class PropertiesReader{
 			Element rootElement=document.getRootElement();
 			this.setNamespace(rootElement.getNamespace());
 			List<Element> importAndProperty=rootElement.getChildren();
+			Element tempElement=null;
+			Element tempEntryElement=null;
 			for(Element element:importAndProperty){
-				if(ElementAndAttributeDefine.ELEMENT_IMPORT.equals(element.getName())){
-					if(StringUtils.isNotBlank(element.getAttributeValue(ElementAndAttributeDefine.ATTR_IMPORT_LOCATION))){
-						resultList.addAll(this.importProperties(element.getAttributeValue(ElementAndAttributeDefine.ATTR_IMPORT_LOCATION)));
+				if(ELEMENT_IMPORT.equals(element.getName())){
+					if(StringUtils.isNotBlank(element.getAttributeValue(ATTR_IMPORT_LOCATION))){
+						resultList.addAll(this.importProperties(element.getAttributeValue(ATTR_IMPORT_LOCATION)));
 					}else{
 						throw new PropertiesBuildException("import元素中没有location属性或值为空白串或空串");
 					}
-				}else if(ElementAndAttributeDefine.ELEMENT_PROPERTY.equals(element.getName())){
+				}else if(ELEMENT_PROPERTY.equals(element.getName())){
 					//根据property元素中值的类型进行相应的处理，处理完成后对结果进行收集
-					if(StringUtils.isBlank(element.getAttributeValue(ElementAndAttributeDefine.ATTR_PROPERTY_KEY))){
+					if(StringUtils.isBlank(element.getAttributeValue(ATTR_PROPERTY_KEY))){
 						throw new PropertiesBuildException("property元素没有key值");
 					}
 					property=new Property();
-					property.setKey(element.getAttributeValue(ElementAndAttributeDefine.ATTR_PROPERTY_KEY));
-					if(element.getChild(ElementAndAttributeDefine.ELEMENT_STRING,namespace)!=null){
+					property.setKey(element.getAttributeValue(ATTR_PROPERTY_KEY));
+					if((tempElement=element.getChild(ELEMENT_STRING,namespace))!=null){
 						property.setObjectClass(String.class);
-						property.setValue(this.extractStringValue(element.getChild(ElementAndAttributeDefine.ELEMENT_STRING,namespace)));
-					}else if(element.getChild(ElementAndAttributeDefine.ELEMENT_LIST,namespace)!=null){
+						property.setStringValue(true);
+						property.setValue(this.extractStringValue(tempElement));
+					}else if((tempElement=element.getChild(ELEMENT_LIST,namespace))!=null){
 						property.setObjectClass(List.class);
-						property.setValue(this.extractListValue(element.getChild(ElementAndAttributeDefine.ELEMENT_LIST,namespace)));
-					}else if(element.getChild(ElementAndAttributeDefine.ELEMENT_MAP,namespace)!=null){
+						property.setStringValue(tempElement.getChild(ELEMENT_STRING, namespace)!=null);
+						property.setValue(this.extractListValue(tempElement));
+					}else if((tempElement=element.getChild(ELEMENT_MAP,namespace))!=null){
 						property.setObjectClass(Map.class);
-						property.setValue(this.extractMapValue(element.getChild(ElementAndAttributeDefine.ELEMENT_MAP,namespace)));
+						
+						tempEntryElement=tempElement.getChild(ELEMENT_ENTRY,namespace);
+						if(tempEntryElement!=null) {
+							property.setStringValue(tempEntryElement.getChild(ELEMENT_STRING, namespace)!=null);
+						}
+						
+						property.setValue(this.extractMapValue(tempElement));
 					}else{
 						property.setObjectClass(null);
+						property.setStringValue(false);
 						property.setValue(null);
 					}
 					resultList.add(property);
@@ -137,11 +159,11 @@ public class PropertiesReader{
 		List<Object> resultList=new ArrayList<>();
 		List<Element> propertyElementList=propertyValueElement.getChildren();
 		for(Element element:propertyElementList){
-			if(ElementAndAttributeDefine.ELEMENT_STRING.equals(element.getName())){
+			if(ELEMENT_STRING.equals(element.getName())){
 				resultList.add(this.extractStringValue(element));
-			}else if(ElementAndAttributeDefine.ELEMENT_LIST.equals(element.getName())){
+			}else if(ELEMENT_LIST.equals(element.getName())){
 				resultList.add(this.extractListValue(element));
-			}else if(ElementAndAttributeDefine.ELEMENT_MAP.equals(element.getName())){
+			}else if(ELEMENT_MAP.equals(element.getName())){
 				resultList.add(this.extractMapValue(element));
 			}
 		}
@@ -156,8 +178,8 @@ public class PropertiesReader{
 		List<Element> entryValueList=null;
 		List<Element> propertyElementList=propertyValueElement.getChildren();
 		for(Element element:propertyElementList){
-			if(ElementAndAttributeDefine.ELEMENT_ENTRY.equals(element.getName())){
-				entryKey=element.getAttributeValue(ElementAndAttributeDefine.ATTR_ENTRY_KEY);
+			if(ELEMENT_ENTRY.equals(element.getName())){
+				entryKey=element.getAttributeValue(ATTR_ENTRY_KEY);
 				if(StringUtils.isBlank(entryKey)){
 					throw new PropertiesBuildException("entry标签必须拥有key属性，且其值不能为空串或空白串");
 				}else if(map.containsKey(entryKey)){
@@ -166,11 +188,11 @@ public class PropertiesReader{
 					entryValueList=element.getChildren();
 					if(entryValueList!=null&&!entryValueList.isEmpty()){
 						entryValue=entryValueList.get(0);
-						if(ElementAndAttributeDefine.ELEMENT_STRING.equals(entryValue.getName())){
+						if(ELEMENT_STRING.equals(entryValue.getName())){
 							map.put(entryKey, this.extractStringValue(entryValue));
-						}else if(ElementAndAttributeDefine.ELEMENT_LIST.equals(entryValue.getName())){
+						}else if(ELEMENT_LIST.equals(entryValue.getName())){
 							map.put(entryKey, this.extractListValue(entryValue));
-						}else if(ElementAndAttributeDefine.ELEMENT_MAP.equals(entryValue.getName())){
+						}else if(ELEMENT_MAP.equals(entryValue.getName())){
 							map.put(entryKey, this.extractMapValue(entryValue));
 						}
 					}
@@ -180,6 +202,23 @@ public class PropertiesReader{
 			}
 		}
 		return map;
+	}
+	
+	/**
+	 * 获取属性对象
+	 * @param key 属性key
+	 * @return
+	 */
+	private Property getProperty(String key) {
+		if(!cachable) {
+			this.load(propertiesFileStream);
+		}
+		for(Property property:properties) {
+			if(StringUtils.equals(key, property.getKey())) {
+				return property;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -225,6 +264,25 @@ public class PropertiesReader{
 		}else{
 			return null;
 		}
+	}
+	
+	/**
+	 * 当一个list类型的property中list的元素都是string时，可以使用该方法直接以string泛型获取
+	 * @param key
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> getStringList(String key){
+		Property property=this.getProperty(key);
+		if(property==null) {
+			return null;
+		}
+		if(property.getValue() instanceof List) {
+			if(property.isStringValue()) {
+				return (List<String>) (property.getValue());
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -280,6 +338,21 @@ public class PropertiesReader{
 		if(value instanceof Map){
 			return (Map<String, Object>) value;
 		}else{
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, String> getStringMap(String key){
+		Property prop=this.getProperty(key);
+		if(prop==null) {
+			return null;
+		}else {
+			if(prop.getValue() instanceof Map) {
+				if(prop.isStringValue()) {
+					return (Map<String, String>) prop.getValue();
+				}
+			}
 			return null;
 		}
 	}
@@ -380,49 +453,6 @@ public class PropertiesReader{
 			}
 		}
 		return false;
-	}
-}
-class ElementAndAttributeDefine{
-	final static String ELEMENT_IMPORT="import";
-	final static String ATTR_IMPORT_LOCATION="location";
-	final static String ELEMENT_PROPERTY="property";
-	final static String ATTR_PROPERTY_KEY="key";
-	final static String ELEMENT_LIST="list";
-	final static String ELEMENT_STRING="string";
-	final static String ELEMENT_MAP="map";
-	final static String ELEMENT_ENTRY="entry";
-	final static String ATTR_ENTRY_KEY="key";
-}
-class Property{
-	private String key;
-	private Class<?> objectClass;
-	private Object value;
-	public String getKey() {
-		return key;
-	}
-	public void setKey(String key) {
-		this.key = key;
-	}
-	public Class<?> getObjectClass() {
-		return objectClass;
-	}
-	public void setObjectClass(Class<?> objectClass) {
-		this.objectClass = objectClass;
-	}
-	public Object getValue() {
-		return value;
-	}
-	public void setValue(Object value) {
-		this.value = value;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <T> T getOriginalValue(Class<T> valueClass){
-		if(valueClass!=null&&valueClass.equals(value.getClass())){
-			return (T) value;
-		}else{
-			return null;
-		}
 	}
 }
 

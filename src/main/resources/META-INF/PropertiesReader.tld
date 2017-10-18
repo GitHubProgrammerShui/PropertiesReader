@@ -7,7 +7,4 @@
 	<tlib-version>1.0</tlib-version>
 	<short-name>props</short-name>
 	<uri>http://www.shui.com/el/PropertiesReader</uri>
-	<function>
-		<name>get</name>
-	</function>
 </taglib>

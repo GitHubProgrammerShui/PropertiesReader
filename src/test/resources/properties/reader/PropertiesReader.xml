@@ -17,4 +17,23 @@
 	<property key="myString">
 		<string>hello world</string>
 	</property>
+	<property key="mystrList">
+		<list>
+			<string>hello world</string>
+			<string>hello world</string>
+		</list>
+	</property>
+	<property key="mystrList2">
+		<list>
+			<list></list>
+			<list></list>
+		</list>
+	</property>
+	<property key="myMap2">
+		<map>
+			<entry key="entry1">
+				<list></list>
+			</entry>
+		</map>
+	</property>
 </properties>

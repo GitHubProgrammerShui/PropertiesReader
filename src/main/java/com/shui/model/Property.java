@@ -1,26 +1,27 @@
 package com.shui.model;
 
+import com.shui.constant.PropertyValueType;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@SuppressWarnings("rawtypes")
 public class Property{
 	private String key;
-	private Class type;
+	private Class objectClass;
+	private boolean stringValue;
 	private Object value;
 	
-	public String getKey() {
-		return key;
-	}
-	public void setKey(String key) {
-		this.key = key;
-	}
-	public Class getType() {
-		return type;
-	}
-	public void setType(Class type) {
-		this.type = type;
-	}
-	public Object getValue() {
-		return value;
-	}
-	public void setValue(Object value) {
-		this.value = value;
+	@SuppressWarnings("unchecked")
+	public <T> T getOriginalValue(Class<T> valueClass){
+		if(valueClass!=null&&valueClass.equals(value.getClass())){
+			return (T) value;
+		}else{
+			return null;
+		}
 	}
 }

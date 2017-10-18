@@ -14,11 +14,14 @@ public class TestPropertiesReader {
 		PropertiesReader reader=new PropertiesReader();
 		reader.load("classpath:properties/reader/PropertiesReader.xml");
 		System.out.println(reader.getString("innerKeyOfProp2"));
+		System.out.println(reader.getStringList("mystrList"));
+		System.out.println(reader.getStringList("mystrList2"));
 	}
 	
 	@Test
 	public void testGitHub(){
-		System.out.println("git hub，hello world");
-		System.out.println("this is my said");
+		PropertiesReader reader=new PropertiesReader();
+		reader.load("classpath:properties/reader/PropertiesReader.xml");
+		System.out.println(reader.getListValue("mystrList2",0,0));
 	}
 }
